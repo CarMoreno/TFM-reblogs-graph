@@ -1,0 +1,17 @@
+[project]
+name = "mastodon-graph"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "mastodon-py>=2.1.4",
+    "matplotlib>=3.10.7",
+    "neo4j>=6.0.2",
+    "notebook>=7.4.7",
+    "pandas>=2.3.3",
+    "polars>=1.33.1",
+    "pre-commit>=4.3.0",
+    "pyarrow>=22.0.0",
+    "pydantic>=2.11.9",
+    "seaborn>=0.13.2",
+]
