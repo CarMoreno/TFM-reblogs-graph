@@ -1,3 +1,5 @@
+import glob
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import current_thread
@@ -139,16 +141,53 @@ def main() -> None:
     logger.info("Process time: %.3f seconds" % (time.time() - start_time))
 
 
-if __name__ == "__main__":
-    import polars as pl
+def process_csv_directory(
+    folder_path: str, pattern: str = "authors_*.csv"
+) -> pl.DataFrame:
+    """
+    Reads CSV files from a directory, skipping empty files to avoid NoDataError.
+    """
+    # 1. Construct the full search path
+    search_path = os.path.join(folder_path, pattern)
 
-    authors = pl.concat(
-        [
-            pl.read_csv(
-                "/Users/carlosm/Documents/TFM/data/trends_authors/authors_*.csv"
-                # "/home/carlos/Documentos/MasterDataScience/TFM/mastodon-graph/data/trends_authors/authors_*.csv"
-            ),
-        ],
-    ).unique(maintain_order=True)
-    print(len(authors))
-    authors.write_csv("authors.csv")
+    # 2. Get a list of all matching files
+    files = glob.glob(search_path)
+
+    if not files:
+        raise FileNotFoundError(f"No files found matching pattern: {search_path}")
+
+    print(f"Found {len(files)} files. Starting processing...")
+
+    dataframes = []
+
+    for file_path in files:
+        if os.path.getsize(file_path) == 0:
+            print(f"Skipping empty file: {os.path.basename(file_path)}")
+            continue
+
+        try:
+            df = pl.read_csv(file_path, infer_schema_length=0)
+            dataframes.append(df)
+        except Exception as e:
+            print(f"Warning: Could not read {os.path.basename(file_path)}. Error: {e}")
+
+    if not dataframes:
+        raise ValueError("No valid data found in any of the files.")
+
+    # 4. Concatenate all valid dataframes
+    print("Concatenating data...")
+    combined_df = pl.concat(dataframes).unique(maintain_order=True)
+
+    return combined_df
+
+
+if __name__ == "__main__":
+    path = "/Users/carlosm/Documents/TFM/data/trends_authors"
+
+    try:
+        authors = process_csv_directory(path)
+        print(f"Successfully loaded {len(authors)} unique rows.")
+        # Save the result
+        authors.write_csv("authors.csv")
+    except Exception as e:
+        print(f"Error: {e}")

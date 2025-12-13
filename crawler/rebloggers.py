@@ -10,8 +10,8 @@ from models.entities import Reblogger
 from config.mastodon import mastodon
 from utils.logger import logger
 
-TEMP_OUTPUT_DIR = "../data/rebloggers_temp"
-FINAL_OUTPUT_FILE = "../data/rebloggers.csv"
+TEMP_OUTPUT_DIR = "../../data/rebloggers_temp"
+FINAL_OUTPUT_FILE = "../data/rebloggers.csv"  # El nuevo archivo de rebloggers aparece en tfm-reblogs-graph/data
 
 
 def process_and_save_rebloggers(author_info: tuple) -> str | None:
