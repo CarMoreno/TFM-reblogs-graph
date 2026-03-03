@@ -1,6 +1,6 @@
 # Reblogs Mastodon Graph
 
-<a href="https://doi.org/10.5281/zenodo.17781317"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17781317.svg"/></a>
+<a href="https://doi.org/10.5281/zenodo.17833259"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17833259.svg"/></a>
 
 ![reblog_graph](reblogs_fragmento.png)
 
